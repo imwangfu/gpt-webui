@@ -8,6 +8,7 @@ import {
   MaxTokenSlider,
   ModelSelector,
   PresencePenaltySlider,
+  StreamingSelector,
   TemperatureSlider,
   TopPSlider,
 } from '@components/ConfigMenu/ConfigMenu';
@@ -93,6 +94,7 @@ const ChatConfigPopup = ({
           _systemMessage={_systemMessage}
           _setSystemMessage={_setSystemMessage}
         />
+        {/* <StreamingSelector __={_model} _setModel={setIsStreaming} /> */}
         <ModelSelector _model={_model} _setModel={_setModel} />
         <MaxTokenSlider
           _maxToken={_maxToken}
