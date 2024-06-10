@@ -4,6 +4,16 @@ import fetch from 'node-fetch';
 export default async (req, res) => {
   const { method, headers, body } = req;
   const targetUrl = req.query.url;
+  // 设置 CORS 头部
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // 对 OPTIONS 请求做出快速响应
+  if (req.method === 'OPTIONS') {
+    res.status(204).end();
+    return;
+  }
+  
 
   if (!targetUrl) {
     res.status(400).json({ error: 'URL is required' });
