@@ -19,7 +19,7 @@ const encoder = new Tiktoken(
 // https://github.com/dqbd/tiktoken/issues/23#issuecomment-1483317174
 export const getChatGPTEncoding = (
   messages: MessageInterface[],
-  model: ModelOptions
+  model: string
 ) => {
   const isGpt3 = model === 'gpt-3.5-turbo';
 
@@ -38,7 +38,7 @@ export const getChatGPTEncoding = (
   return encoder.encode(serialized, 'all');
 };
 
-const countTokens = (messages: MessageInterface[], model: ModelOptions) => {
+const countTokens = (messages: MessageInterface[], model: string) => {
   if (messages.length === 0) return 0;
   return getChatGPTEncoding(messages, model).length;
 };
@@ -46,7 +46,7 @@ const countTokens = (messages: MessageInterface[], model: ModelOptions) => {
 export const limitMessageTokens = (
   messages: MessageInterface[],
   limit: number = 4096,
-  model: ModelOptions
+  model: string
 ): MessageInterface[] => {
   const limitedMessages: MessageInterface[] = [];
   let tokenCount = 0;
@@ -88,7 +88,7 @@ export const limitMessageTokens = (
 };
 
 export const updateTotalTokenUsed = (
-  model: ModelOptions,
+  model: string,
   promptMessages: MessageInterface[],
   completionMessage: MessageInterface
 ) => {

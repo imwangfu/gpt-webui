@@ -17,7 +17,7 @@ export const _defaultSystemMessage =
 Carefully heed the user's instructions. 
 Respond using Markdown.`;
 
-export const modelOptions: ModelOptions[] = [
+export const modelOptions: string[] = [
   'gpt-3.5-turbo',
   'gpt-3.5-turbo-16k',
   'gpt-3.5-turbo-1106',
@@ -37,7 +37,7 @@ export const modelOptions: ModelOptions[] = [
 
 export const defaultModel = 'gpt-3.5-turbo';
 
-export const modelMaxToken = {
+export const modelMaxToken: any = {
   'gpt-3.5-turbo': 4096,
   'gpt-3.5-turbo-0301': 4096,
   'gpt-3.5-turbo-0613': 4096,
@@ -145,6 +145,7 @@ export const _defaultChatConfig: ConfigInterface = {
   max_tokens: defaultUserMaxToken,
   temperature: 0.3,
   presence_penalty: 0,
+  stream: false,
   top_p: 1.0,
   frequency_penalty: 0,
 };

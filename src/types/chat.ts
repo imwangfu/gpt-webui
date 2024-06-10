@@ -19,7 +19,7 @@ export interface ChatInterface {
 }
 
 export interface ConfigInterface {
-  model: ModelOptions;
+  model: string;
   max_tokens: number;
   temperature: number;
   stream: boolean
@@ -68,7 +68,7 @@ export type ModelOptions =
 // | 'gpt-4-32k-0314'
 
 export type TotalTokenUsed = {
-  [model in ModelOptions]?: {
+  [model in string]?: {
     promptTokens: number;
     completionTokens: number;
   };

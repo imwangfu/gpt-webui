@@ -18,7 +18,7 @@ export const getChatCompletion = async (
   if (isAzureEndpoint(endpoint) && apiKey) {
     headers['api-key'] = apiKey;
 
-    const modelmapping: Partial<Record<ModelOptions, string>> = {
+    const modelmapping: Partial<Record<string, string>> = {
       'gpt-3.5-turbo': 'gpt-35-turbo',
       'gpt-3.5-turbo-16k': 'gpt-35-turbo-16k',
       'gpt-3.5-turbo-1106': 'gpt-35-turbo-1106',
@@ -74,7 +74,7 @@ export const getChatCompletionStream = async (
   if (isAzureEndpoint(endpoint) && apiKey) {
     headers['api-key'] = apiKey;
 
-    const modelmapping: Partial<Record<ModelOptions, string>> = {
+    const modelmapping: Partial<Record<string, string>> = {
       'gpt-3.5-turbo': 'gpt-35-turbo',
       'gpt-3.5-turbo-16k': 'gpt-35-turbo-16k',
     };

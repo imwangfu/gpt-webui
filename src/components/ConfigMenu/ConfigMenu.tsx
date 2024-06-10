@@ -17,7 +17,7 @@ const ConfigMenu = ({
   setConfig: (config: ConfigInterface) => void;
 }) => {
   const [_maxToken, _setMaxToken] = useState<number>(config.max_tokens);
-  const [_model, _setModel] = useState<ModelOptions>(config.model);
+  const [_model, _setModel] = useState<any>(config.model);
   const [isStreaming, setIsStreaming] = useState<boolean>(config.stream);
   const [_temperature, _setTemperature] = useState<number>(config.temperature);
   const [_presencePenalty, _setPresencePenalty] = useState<number>(
@@ -200,7 +200,7 @@ export const MaxTokenSlider = ({
 }: {
   _maxToken: number;
   _setMaxToken: React.Dispatch<React.SetStateAction<number>>;
-  _model: ModelOptions;
+  _model: string;
 }) => {
   const { t } = useTranslation('model');
   const inputRef = useRef<HTMLInputElement>(null);

@@ -47,7 +47,7 @@ const ChatConfigPopup = ({
   const [_systemMessage, _setSystemMessage] = useState<string>(
     useStore.getState().defaultSystemMessage
   );
-  const [_model, _setModel] = useState<ModelOptions>(config.model);
+  const [_model, _setModel] = useState<string>(config.model);
   const [isStreaming, setIsStreaming] = useState<boolean>(config.stream);
   const [_maxToken, _setMaxToken] = useState<number>(config.max_tokens);
   const [_temperature, _setTemperature] = useState<number>(config.temperature);
