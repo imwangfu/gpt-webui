@@ -10,10 +10,6 @@
       "use": "@vercel/static"
     },
     {
-      "src": "src/**/*",
-      "use": "@vercel/static"
-    },
-    {
       "src": "dist/**/*",
       "use": "@vercel/static"
     }
@@ -32,9 +28,5 @@
     "env": {
       "NODE_ENV": "production"
     }
-  },
-  "scripts": {
-    "build": "npm run build"
-  },
-  "outputDirectory": "dist"
+  }
 }
