@@ -1,6 +1,7 @@
-const fetch = require('node-fetch');
+// 使用 import 代替 require
+import fetch from 'node-fetch';
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   const { method, headers, body } = req;
   const targetUrl = req.query.url;
 
@@ -12,8 +13,8 @@ module.exports = async (req, res) => {
   try {
     const response = await fetch(targetUrl, {
       method,
-      headers: { ...headers, host: new URL(targetUrl).host },  // 动态更新host
-      body: method === 'GET' ? null : JSON.stringify(body)  // 确保在POST时传递请求体
+      headers: { ...headers, host: new URL(targetUrl).host },
+      body: method === 'GET' ? null : JSON.stringify(body)
     });
 
     const data = await response.json();
