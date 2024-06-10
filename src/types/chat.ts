@@ -20,12 +20,12 @@ export interface ChatInterface {
 
 export interface ConfigInterface {
   model: string;
-  max_tokens: number;
-  temperature: number;
+  max_tokens: number |null;
+  temperature: number | null;
   stream: boolean
-  presence_penalty: number;
-  top_p: number;
-  frequency_penalty: number;
+  presence_penalty: number | null;
+  top_p: number | null;
+  frequency_penalty: number | null;
 }
 
 export interface ChatHistoryInterface {

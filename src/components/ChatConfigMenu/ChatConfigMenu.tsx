@@ -49,13 +49,13 @@ const ChatConfigPopup = ({
   );
   const [_model, _setModel] = useState<string>(config.model);
   const [isStreaming, setIsStreaming] = useState<boolean>(config.stream);
-  const [_maxToken, _setMaxToken] = useState<number>(config.max_tokens);
-  const [_temperature, _setTemperature] = useState<number>(config.temperature);
-  const [_topP, _setTopP] = useState<number>(config.top_p);
-  const [_presencePenalty, _setPresencePenalty] = useState<number>(
+  const [_maxToken, _setMaxToken] = useState<any>(config.max_tokens);
+  const [_temperature, _setTemperature] = useState<any>(config.temperature);
+  const [_topP, _setTopP] = useState<any>(config.top_p);
+  const [_presencePenalty, _setPresencePenalty] = useState<any>(
     config.presence_penalty
   );
-  const [_frequencyPenalty, _setFrequencyPenalty] = useState<number>(
+  const [_frequencyPenalty, _setFrequencyPenalty] = useState<any>(
     config.frequency_penalty
   );
 
@@ -101,7 +101,7 @@ const ChatConfigPopup = ({
         <ModelSelector _model={_model} _setModel={_setModel} />
         <MaxTokenSlider
           _maxToken={_maxToken}
-          _setMaxToken={_setMaxToken}
+          _setMaxToken={_setMaxToken as any}
           _model={_model}
         />
         <TemperatureSlider

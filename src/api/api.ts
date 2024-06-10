@@ -42,7 +42,7 @@ export const getChatCompletion = async (
       endpoint += path;
     }
   }
-
+  debugger
   const response = await fetch(endpoint, {
     method: 'POST',
     headers,

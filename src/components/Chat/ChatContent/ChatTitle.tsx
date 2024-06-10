@@ -18,6 +18,7 @@ const ChatTitle = React.memo(() => {
         : undefined,
     shallow
   );
+  debugger
   const setChats = useStore((state) => state.setChats);
   const currentChatIndex = useStore((state) => state.currentChatIndex);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -26,6 +27,7 @@ const ChatTitle = React.memo(() => {
     const updatedChats: ChatInterface[] = JSON.parse(
       JSON.stringify(useStore.getState().chats)
     );
+    debugger
     updatedChats[currentChatIndex].config = config;
     setChats(updatedChats);
   };

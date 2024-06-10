@@ -5,8 +5,8 @@ import PopupModal from '@components/PopupModal';
 import { ConfigInterface, ModelOptions } from '@type/chat';
 import DownChevronArrow from '@icon/DownChevronArrow';
 import { modelMaxToken, modelOptions } from '@constants/chat';
+import { Switch } from 'antd';
 import { t } from 'i18next';
-
 const ConfigMenu = ({
   setIsModalOpen,
   config,
@@ -16,28 +16,28 @@ const ConfigMenu = ({
   config: ConfigInterface;
   setConfig: (config: ConfigInterface) => void;
 }) => {
-  const [_maxToken, _setMaxToken] = useState<number>(config.max_tokens);
+  const [_maxToken, _setMaxToken] = useState<any>(config.max_tokens);
   const [_model, _setModel] = useState<any>(config.model);
   const [isStreaming, setIsStreaming] = useState<boolean>(config.stream);
-  const [_temperature, _setTemperature] = useState<number>(config.temperature);
-  const [_presencePenalty, _setPresencePenalty] = useState<number>(
-    config.presence_penalty
-  );
-  const [_topP, _setTopP] = useState<number>(config.top_p);
-  const [_frequencyPenalty, _setFrequencyPenalty] = useState<number>(
-    config.frequency_penalty
-  );
+  const [_temperature, _setTemperature] = useState<any>(config.temperature);
+  const [_presencePenalty, _setPresencePenalty] = useState<any>(config.presence_penalty);
+  const [_topP, _setTopP] = useState<any>(config.top_p);
+  const [_frequencyPenalty, _setFrequencyPenalty] = useState<any>(config.frequency_penalty);
+  const [enableTemperature, setEnableTemperature] = useState<boolean>(true);
+  const [enableTopP, setEnableTopP] = useState<boolean>(true);
+  const [enablePresencePenalty, setEnablePresencePenalty] = useState<boolean>(true);
+  const [enableFrequencyPenalty, setEnableFrequencyPenalty] = useState<boolean>(true);
+  const [enableMaxToken, setEnableMaxToken] = useState<boolean>(true);
   const { t } = useTranslation('model');
-
   const handleConfirm = () => {
     setConfig({
-      max_tokens: _maxToken,
+      max_tokens: enableMaxToken ? _maxToken : null,
       model: _model,
-      temperature: _temperature,
-      presence_penalty: _presencePenalty,
-      top_p: _topP,
+      temperature: enableTemperature ? _temperature : null,
+      presence_penalty: enablePresencePenalty ? _presencePenalty : null,
+      top_p: enableTopP ? _topP : null,
       stream: isStreaming,
-      frequency_penalty: _frequencyPenalty,
+      frequency_penalty: enableFrequencyPenalty ? _frequencyPenalty : null,
     });
     setIsModalOpen(false);
   };
@@ -50,26 +50,38 @@ const ConfigMenu = ({
       handleClickBackdrop={handleConfirm}
     >
       <div className='p-6 border-b border-gray-200 dark:border-gray-600'>
-        
         <ModelSelector _model={_model} _setModel={_setModel} />
         <StreamingSelector isStreaming={isStreaming} setIsStreaming={setIsStreaming} />
         <MaxTokenSlider
           _maxToken={_maxToken}
           _setMaxToken={_setMaxToken}
+          enableMaxToken={enableMaxToken}
+          setEnableMaxToken={setEnableMaxToken}
           _model={_model}
         />
         <TemperatureSlider
           _temperature={_temperature}
           _setTemperature={_setTemperature}
+          enableTemperature={enableTemperature}
+          setEnableTemperature={setEnableTemperature}
         />
-        <TopPSlider _topP={_topP} _setTopP={_setTopP} />
+        <TopPSlider
+          _topP={_topP}
+          _setTopP={_setTopP}
+          enableTopP={enableTopP}
+          setEnableTopP={setEnableTopP}
+        />
         <PresencePenaltySlider
           _presencePenalty={_presencePenalty}
           _setPresencePenalty={_setPresencePenalty}
+          enablePresencePenalty={enablePresencePenalty}
+          setEnablePresencePenalty={setEnablePresencePenalty}
         />
         <FrequencyPenaltySlider
           _frequencyPenalty={_frequencyPenalty}
           _setFrequencyPenalty={_setFrequencyPenalty}
+          enableFrequencyPenalty={enableFrequencyPenalty}
+          setEnableFrequencyPenalty={setEnableFrequencyPenalty}
         />
       </div>
     </PopupModal>
@@ -117,9 +129,6 @@ export const StreamingSelector = ({
     </div>
   );
 };
-
-
-
 
 export const ModelSelector = ({
   _model,
@@ -197,36 +206,68 @@ export const MaxTokenSlider = ({
   _maxToken,
   _setMaxToken,
   _model,
+  enableMaxToken,
+  setEnableMaxToken,
 }: {
-  _maxToken: number;
-  _setMaxToken: React.Dispatch<React.SetStateAction<number>>;
+  _maxToken: number | null;
+  _setMaxToken: React.Dispatch<React.SetStateAction<number | null>>;
   _model: string;
+  enableMaxToken?: boolean;
+  setEnableMaxToken?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation('model');
   const inputRef = useRef<HTMLInputElement>(null);
+  const [localMaxToken, setLocalMaxToken] = useState(4096)
 
   useEffect(() => {
-    inputRef &&
-      inputRef.current &&
+    if (_maxToken !== null) {
+      setLocalMaxToken(_maxToken);
+      setEnableMaxToken && setEnableMaxToken(true);
+    } else {
+      setEnableMaxToken && setEnableMaxToken(false);
+    }
+  }, [_maxToken]);
+
+  const handleSliderChange = (value: number) => {
+    setLocalMaxToken(value);
+    _setMaxToken(value);
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setEnableMaxToken && setEnableMaxToken(checked);
+    if (checked) {
+      _setMaxToken(localMaxToken);
+    } else {
+      _setMaxToken(null);
+    }
+  };
+
+  useEffect(() => {
+    if (inputRef && inputRef.current) {
       _setMaxToken(Number(inputRef.current.value));
+    }
   }, [_model]);
 
   return (
     <div>
       <label className='block text-sm font-medium text-gray-900 dark:text-white'>
-        {t('token.label')}: {_maxToken}
+        {t('token.label')}: {enableMaxToken ? localMaxToken : 'N/A'}
       </label>
+      <Switch
+        checked={enableMaxToken}
+        onChange={handleSwitchChange}
+        className='mb-2'
+      />
       <input
         type='range'
         ref={inputRef}
-        value={_maxToken}
-        onChange={(e) => {
-          _setMaxToken(Number(e.target.value));
-        }}
+        value={enableMaxToken ? localMaxToken as any : 0}
+        onChange={(e) => handleSliderChange(Number(e.target.value))}
         min={0}
-        max={modelMaxToken[_model]}
+        max={modelMaxToken[_model] || 4096}
         step={1}
         className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer'
+        disabled={!enableMaxToken}
       />
       <div className='min-w-fit text-gray-500 dark:text-gray-300 text-sm mt-2'>
         {t('token.description')}
@@ -238,28 +279,60 @@ export const MaxTokenSlider = ({
 export const TemperatureSlider = ({
   _temperature,
   _setTemperature,
+  enableTemperature,
+  setEnableTemperature,
 }: {
-  _temperature: number;
-  _setTemperature: React.Dispatch<React.SetStateAction<number>>;
+  _temperature: number | null;
+  _setTemperature: React.Dispatch<React.SetStateAction<number | null>>;
+  enableTemperature?: boolean;
+  setEnableTemperature?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation('model');
+  const [localTemperature, setLocalTemperature] = useState<number>(1.0);
+
+  useEffect(() => {
+    if (_temperature !== null) {
+      setLocalTemperature(_temperature);
+      setEnableTemperature && setEnableTemperature(true);
+    } else {
+      setEnableTemperature && setEnableTemperature(false);
+    }
+  }, [_temperature]);
+
+  const handleSliderChange = (value: number) => {
+    setLocalTemperature(value);
+    _setTemperature(value);
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setEnableTemperature && setEnableTemperature(checked);
+    if (checked) {
+      _setTemperature(localTemperature);
+    } else {
+      _setTemperature(null);
+    }
+  };
 
   return (
     <div className='mt-5 pt-5 border-t border-gray-500'>
       <label className='block text-sm font-medium text-gray-900 dark:text-white'>
-        {t('temperature.label')}: {_temperature}
+        {t('temperature.label')}: {enableTemperature ? localTemperature : 'N/A'}
       </label>
+      <Switch
+        checked={enableTemperature}
+        onChange={handleSwitchChange}
+        className='mb-2'
+      />
       <input
         id='default-range'
         type='range'
-        value={_temperature}
-        onChange={(e) => {
-          _setTemperature(Number(e.target.value));
-        }}
+        value={enableTemperature ? localTemperature : 0}
+        onChange={(e) => handleSliderChange(Number(e.target.value))}
         min={0}
         max={2}
         step={0.1}
         className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer'
+        disabled={!enableTemperature}
       />
       <div className='min-w-fit text-gray-500 dark:text-gray-300 text-sm mt-2'>
         {t('temperature.description')}
@@ -268,31 +341,64 @@ export const TemperatureSlider = ({
   );
 };
 
+
 export const TopPSlider = ({
   _topP,
   _setTopP,
+  enableTopP,
+  setEnableTopP,
 }: {
-  _topP: number;
-  _setTopP: React.Dispatch<React.SetStateAction<number>>;
+  _topP: number | null;
+  _setTopP: React.Dispatch<React.SetStateAction<number | null>>;
+  enableTopP?: boolean;
+  setEnableTopP?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation('model');
+  const [localTopP, setLocalTopP] = useState<number>(0.9);
+
+  useEffect(() => {
+    if (_topP !== null) {
+      setLocalTopP(_topP);
+      setEnableTopP && setEnableTopP(true);
+    } else {
+      setEnableTopP && setEnableTopP(false);
+    }
+  }, [_topP]);
+
+  const handleSliderChange = (value: number) => {
+    setLocalTopP(value);
+    _setTopP(value);
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setEnableTopP && setEnableTopP(checked);
+    if (checked) {
+      _setTopP(localTopP);
+    } else {
+      _setTopP(null);
+    }
+  };
 
   return (
     <div className='mt-5 pt-5 border-t border-gray-500'>
       <label className='block text-sm font-medium text-gray-900 dark:text-white'>
-        {t('topP.label')}: {_topP}
+        {t('topP.label')}: {enableTopP ? localTopP : 'N/A'}
       </label>
+      <Switch
+        checked={enableTopP}
+        onChange={handleSwitchChange}
+        className='mb-2'
+      />
       <input
         id='default-range'
         type='range'
-        value={_topP}
-        onChange={(e) => {
-          _setTopP(Number(e.target.value));
-        }}
+        value={enableTopP ? localTopP : 0}
+        onChange={(e) => handleSliderChange(Number(e.target.value))}
         min={0}
         max={1}
         step={0.05}
         className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer'
+        disabled={!enableTopP}
       />
       <div className='min-w-fit text-gray-500 dark:text-gray-300 text-sm mt-2'>
         {t('topP.description')}
@@ -304,28 +410,60 @@ export const TopPSlider = ({
 export const PresencePenaltySlider = ({
   _presencePenalty,
   _setPresencePenalty,
+  enablePresencePenalty,
+  setEnablePresencePenalty,
 }: {
-  _presencePenalty: number;
-  _setPresencePenalty: React.Dispatch<React.SetStateAction<number>>;
+  _presencePenalty: number | null;
+  _setPresencePenalty: React.Dispatch<React.SetStateAction<number | null>>;
+  enablePresencePenalty?: boolean;
+  setEnablePresencePenalty?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation('model');
+  const [localPresencePenalty, setLocalPresencePenalty] = useState<number>(0.0);
+
+  useEffect(() => {
+    if (_presencePenalty !== null) {
+      setLocalPresencePenalty(_presencePenalty);
+      setEnablePresencePenalty && setEnablePresencePenalty(true);
+    } else {
+      setEnablePresencePenalty && setEnablePresencePenalty(false);
+    }
+  }, [_presencePenalty]);
+
+  const handleSliderChange = (value: number) => {
+    setLocalPresencePenalty(value);
+    _setPresencePenalty(value);
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setEnablePresencePenalty && setEnablePresencePenalty(checked);
+    if (checked) {
+      _setPresencePenalty(localPresencePenalty);
+    } else {
+      _setPresencePenalty(null);
+    }
+  };
 
   return (
     <div className='mt-5 pt-5 border-t border-gray-500'>
       <label className='block text-sm font-medium text-gray-900 dark:text-white'>
-        {t('presencePenalty.label')}: {_presencePenalty}
+        {t('presencePenalty.label')}: {enablePresencePenalty ? localPresencePenalty : 'N/A'}
       </label>
+      <Switch
+        checked={enablePresencePenalty}
+        onChange={handleSwitchChange}
+        className='mb-2'
+      />
       <input
         id='default-range'
         type='range'
-        value={_presencePenalty}
-        onChange={(e) => {
-          _setPresencePenalty(Number(e.target.value));
-        }}
+        value={enablePresencePenalty ? localPresencePenalty : 0}
+        onChange={(e) => handleSliderChange(Number(e.target.value))}
         min={-2}
         max={2}
         step={0.1}
         className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer'
+        disabled={!enablePresencePenalty}
       />
       <div className='min-w-fit text-gray-500 dark:text-gray-300 text-sm mt-2'>
         {t('presencePenalty.description')}
@@ -334,31 +472,64 @@ export const PresencePenaltySlider = ({
   );
 };
 
+
 export const FrequencyPenaltySlider = ({
   _frequencyPenalty,
   _setFrequencyPenalty,
+  enableFrequencyPenalty,
+  setEnableFrequencyPenalty,
 }: {
-  _frequencyPenalty: number;
-  _setFrequencyPenalty: React.Dispatch<React.SetStateAction<number>>;
+  _frequencyPenalty: number | null;
+  _setFrequencyPenalty: React.Dispatch<React.SetStateAction<number | null>>;
+  enableFrequencyPenalty?: boolean;
+  setEnableFrequencyPenalty?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation('model');
+  const [localFrequencyPenalty, setLocalFrequencyPenalty] = useState<number>(0.0);
+
+  useEffect(() => {
+    if (_frequencyPenalty !== null) {
+      setLocalFrequencyPenalty(_frequencyPenalty);
+      setEnableFrequencyPenalty && setEnableFrequencyPenalty(true);
+    } else {
+      setEnableFrequencyPenalty && setEnableFrequencyPenalty(false);
+    }
+  }, [_frequencyPenalty]);
+
+  const handleSliderChange = (value: number) => {
+    setLocalFrequencyPenalty(value);
+    _setFrequencyPenalty(value);
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setEnableFrequencyPenalty && setEnableFrequencyPenalty(checked);
+    if (checked) {
+      _setFrequencyPenalty(localFrequencyPenalty);
+    } else {
+      _setFrequencyPenalty(null);
+    }
+  };
 
   return (
     <div className='mt-5 pt-5 border-t border-gray-500'>
       <label className='block text-sm font-medium text-gray-900 dark:text-white'>
-        {t('frequencyPenalty.label')}: {_frequencyPenalty}
+        {t('frequencyPenalty.label')}: {enableFrequencyPenalty ? localFrequencyPenalty : 'N/A'}
       </label>
+      <Switch
+        checked={enableFrequencyPenalty}
+        onChange={handleSwitchChange}
+        className='mb-2'
+      />
       <input
         id='default-range'
         type='range'
-        value={_frequencyPenalty}
-        onChange={(e) => {
-          _setFrequencyPenalty(Number(e.target.value));
-        }}
+        value={enableFrequencyPenalty ? localFrequencyPenalty : 0}
+        onChange={(e) => handleSliderChange(Number(e.target.value))}
         min={-2}
         max={2}
         step={0.1}
         className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer'
+        disabled={!enableFrequencyPenalty}
       />
       <div className='min-w-fit text-gray-500 dark:text-gray-300 text-sm mt-2'>
         {t('frequencyPenalty.description')}
@@ -366,5 +537,6 @@ export const FrequencyPenaltySlider = ({
     </div>
   );
 };
+
 
 export default ConfigMenu;
