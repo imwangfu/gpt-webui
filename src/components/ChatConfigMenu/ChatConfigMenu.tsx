@@ -48,6 +48,7 @@ const ChatConfigPopup = ({
     useStore.getState().defaultSystemMessage
   );
   const [_model, _setModel] = useState<ModelOptions>(config.model);
+  const [isStreaming, setIsStreaming] = useState<boolean>(config.stream);
   const [_maxToken, _setMaxToken] = useState<number>(config.max_tokens);
   const [_temperature, _setTemperature] = useState<number>(config.temperature);
   const [_topP, _setTopP] = useState<number>(config.top_p);
@@ -68,6 +69,7 @@ const ChatConfigPopup = ({
       top_p: _topP,
       presence_penalty: _presencePenalty,
       frequency_penalty: _frequencyPenalty,
+      stream: isStreaming
     });
     setDefaultSystemMessage(_systemMessage);
     setIsModalOpen(false);
@@ -75,6 +77,7 @@ const ChatConfigPopup = ({
 
   const handleReset = () => {
     _setModel(_defaultChatConfig.model);
+    setIsStreaming(false)
     _setMaxToken(_defaultChatConfig.max_tokens);
     _setTemperature(_defaultChatConfig.temperature);
     _setTopP(_defaultChatConfig.top_p);
@@ -94,7 +97,7 @@ const ChatConfigPopup = ({
           _systemMessage={_systemMessage}
           _setSystemMessage={_setSystemMessage}
         />
-        {/* <StreamingSelector __={_model} _setModel={setIsStreaming} /> */}
+        <StreamingSelector isStreaming={isStreaming} setIsStreaming={setIsStreaming} />
         <ModelSelector _model={_model} _setModel={_setModel} />
         <MaxTokenSlider
           _maxToken={_maxToken}

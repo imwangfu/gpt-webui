@@ -28,6 +28,8 @@ const AboutMenu = () => {
         >
           <div className='p-6 border-b border-gray-200 dark:border-gray-600'>
             <div className='min-w-fit text-gray-900 dark:text-gray-300 text-sm flex flex-col gap-3 leading-relaxed'>
+              
+              本项目 fock 自 Better ChatGPT。下面是原信息
               <p>{t('description', { ns: 'about' })}</p>
               <p>
                 <Trans

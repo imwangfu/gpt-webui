@@ -5,6 +5,7 @@ import PopupModal from '@components/PopupModal';
 import { ConfigInterface, ModelOptions } from '@type/chat';
 import DownChevronArrow from '@icon/DownChevronArrow';
 import { modelMaxToken, modelOptions } from '@constants/chat';
+import { t } from 'i18next';
 
 const ConfigMenu = ({
   setIsModalOpen,
@@ -17,6 +18,7 @@ const ConfigMenu = ({
 }) => {
   const [_maxToken, _setMaxToken] = useState<number>(config.max_tokens);
   const [_model, _setModel] = useState<ModelOptions>(config.model);
+  const [isStreaming, setIsStreaming] = useState<boolean>(config.stream);
   const [_temperature, _setTemperature] = useState<number>(config.temperature);
   const [_presencePenalty, _setPresencePenalty] = useState<number>(
     config.presence_penalty
@@ -34,6 +36,7 @@ const ConfigMenu = ({
       temperature: _temperature,
       presence_penalty: _presencePenalty,
       top_p: _topP,
+      stream: isStreaming,
       frequency_penalty: _frequencyPenalty,
     });
     setIsModalOpen(false);
@@ -47,7 +50,9 @@ const ConfigMenu = ({
       handleClickBackdrop={handleConfirm}
     >
       <div className='p-6 border-b border-gray-200 dark:border-gray-600'>
+        
         <ModelSelector _model={_model} _setModel={_setModel} />
+        <StreamingSelector isStreaming={isStreaming} setIsStreaming={setIsStreaming} />
         <MaxTokenSlider
           _maxToken={_maxToken}
           _setMaxToken={_setMaxToken}
@@ -85,6 +90,7 @@ export const StreamingSelector = ({
   return (
     <div className='mb-4'>
       <label htmlFor='streamingSwitch' className='flex items-center cursor-pointer'>
+        <span className='text-white'>流式：</span>
         <div className='relative'>
           <input
             id='streamingSwitch'
@@ -93,10 +99,14 @@ export const StreamingSelector = ({
             checked={isStreaming}
             onChange={toggleStreaming}
           />
-          <div className='block bg-gray-600 w-14 h-8 rounded-full'></div>
           <div
-            className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${
-              isStreaming ? 'transform translate-x-full bg-green-500' : 'bg-gray-400'
+            className={`block w-14 h-8 rounded-full transition-colors ${
+              isStreaming ? 'bg-green-500' : 'bg-gray-600'
+            }`}
+          ></div>
+          <div
+            className={`dot absolute left-1 top-1 w-6 h-6 rounded-full transition-transform transform ${
+              isStreaming ? 'translate-x-full bg-white' : 'bg-white'
             }`}
           ></div>
         </div>
@@ -109,6 +119,8 @@ export const StreamingSelector = ({
 };
 
 
+
+
 export const ModelSelector = ({
   _model,
   _setModel,
@@ -117,7 +129,7 @@ export const ModelSelector = ({
   _setModel: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [dropDown, setDropDown] = useState<boolean>(false);
-  const [inputModel, setInputModel] = useState<string>(_model);
+  const [inputModel, setInputModel] = useState<string>('');
 
   const handleSelectModel = (m: string) => {
     _setModel(m);
@@ -134,51 +146,52 @@ export const ModelSelector = ({
   };
 
   return (
-    <div className='mb-4'>
-      <button
-        className='btn btn-neutral btn-small flex gap-1'
-        type='button'
-        onClick={() => setDropDown(prev => !prev)}
-        aria-label='model'
-      >
-        {_model}
-        <DownChevronArrow />
-      </button>
-      {dropDown && (
-        <div
-          id='dropdown'
-          className='absolute top-100 bottom-100 z-10 bg-white rounded-lg shadow-xl border-b border-black/10 dark:border-gray-900/50 text-gray-800 dark:text-gray-100 group dark:bg-gray-800 opacity-90'
+    <div className='mb-4 flex items-center'>
+      <div>
+        <button
+          className='btn btn-neutral btn-small flex gap-1'
+          type='button'
+          onClick={() => setDropDown(prev => !prev)}
+          aria-label='model'
         >
-          <div>
-            <input
-              type='text'
-              value={inputModel}
-              onChange={handleInputChange}
-              className='px-4 py-2 w-full text-sm'
-              placeholder='Enter model name...'
-              onKeyDown={(e) => e.key === 'Enter' && handleInputConfirm()}
-            />
-          </div>
-          <ul
-            className='text-sm text-gray-700 dark:text-gray-200 p-0 m-0'
-            aria-labelledby='dropdownDefaultButton'
+          {_model}
+          <DownChevronArrow />
+        </button>
+        {dropDown && (
+          <div
+            id='dropdown'
+            className='absolute top-100 bottom-100 z-10 bg-white rounded-lg shadow-xl border-b border-black/10 dark:border-gray-900/50 text-gray-800 dark:text-gray-100 group dark:bg-gray-800 opacity-90'
           >
-            {modelOptions.map((m) => (
-              <li
-                className='px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer'
-                onClick={() => handleSelectModel(m)}
-                key={m}
-              >
-                {m}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+            <ul
+              className='text-sm text-gray-700 dark:text-gray-200 p-0 m-0'
+              aria-labelledby='dropdownDefaultButton'
+            >
+              {modelOptions.map((m) => (
+                <li
+                  className='px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer'
+                  onClick={() => handleSelectModel(m)}
+                  key={m}
+                >
+                  {m}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div className='flex-grow ml-2'>
+        <input
+          type='text'
+          value={inputModel}
+          onChange={handleInputChange}
+          className='px-4 py-2 w-full bg-gray-600 text-sm text-white'
+          placeholder={t('custom model name, type Enter key ...') as string}
+          onKeyDown={(e) => e.key === 'Enter' && handleInputConfirm()}
+        />
+      </div>
     </div>
   );
 };
-
 
 export const MaxTokenSlider = ({
   _maxToken,
