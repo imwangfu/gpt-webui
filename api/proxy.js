@@ -1,6 +1,6 @@
 // 使用 import 代替 require
 import fetch from 'node-fetch';
-
+export const maxDuration = 60; 
 export default async (req, res) => {
   const { method, headers, body } = req;
   const targetUrl = req.query.url;
