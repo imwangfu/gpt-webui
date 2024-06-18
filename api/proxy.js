@@ -1,6 +1,12 @@
+
+export const maxDuration = 60; 
+export const config = {
+  api: {
+    maxDuration: 60 // 设置函数最大持续时间为 60 秒
+  }
+};
 // 使用 import 代替 require
 import fetch from 'node-fetch';
-export const maxDuration = 60; 
 export default async (req, res) => {
   const { method, headers, body } = req;
   const targetUrl = req.query.url;
