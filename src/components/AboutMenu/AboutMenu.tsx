@@ -18,7 +18,7 @@ const AboutMenu = () => {
         <div>
           <AboutIcon />
         </div>
-        {t('about')}
+        {t('关于')}
       </a>
       {isModalOpen && (
         <PopupModal
@@ -34,7 +34,7 @@ const AboutMenu = () => {
                       target='_blank'
                       className='link'
                     >Better ChatGPT。</a> </p>
-              <p>Better ChatGPT 是一个 CC0-1.0 license 的开源 Web 应用，允许您免费使用 OpenAI 的 ChatGPT API 进行对话！</p>
+              <p>Better ChatGPT 是一个 CC0-1.0 license 的开源 Web 应用，允许您免费使用类 OpenAI 的 ChatGPT API 进行对话！</p>
             </div>
           </div>
         </PopupModal>

@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import PersonIcon from '@icon/PersonIcon';
 import ApiMenu from '@components/ApiMenu';
+import useStore from '@store/store';
 
 const Config = () => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const firstVisit = useStore((state) => state.firstVisit);
+  const setFirstVisit = useStore((state) => state.setFirstVisit);
+
+  useEffect(() => {
+    const storedFirstVisit = localStorage.getItem('firstVisit');
+    if (storedFirstVisit === null) {
+      setIsModalOpen(true);
+      setFirstVisit(true);
+      localStorage.setItem('firstVisit', 'false');
+    } else {
+      setFirstVisit(false);
+    }
+  }, [setFirstVisit]);
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setFirstVisit(false);
+  };
 
   return (
     <>
@@ -18,7 +37,7 @@ const Config = () => {
         <PersonIcon />
         {t('api')}
       </a>
-      {isModalOpen && <ApiMenu setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && <ApiMenu setIsModalOpen={handleModalClose} />}
     </>
   );
 };
