@@ -13,29 +13,37 @@ const dateString =
 // default system message obtained using the following method: https://twitter.com/DeminDimin/status/1619935545144279040
 export const _defaultSystemMessage =
   import.meta.env.VITE_DEFAULT_SYSTEM_MESSAGE ??
-  `You are ChatGPT, a large language model trained by OpenAI.
+  `You are a smart assistant, a large language model that can do anything.
 Carefully heed the user's instructions. 
 Respond using Markdown.`;
 
 export const modelOptions: string[] = [
-  'gpt-3.5-turbo',
-  'gpt-3.5-turbo-16k',
-  'gpt-3.5-turbo-1106',
-  'gpt-3.5-turbo-0125',
-  'gpt-4',
-  'gpt-4-32k',
-  'gpt-4-1106-preview',
-  'gpt-4-0125-preview',
-  'gpt-4-turbo',
-  'gpt-4-turbo-2024-04-09',
-  'gpt-4o',
-  'gpt-4o-2024-05-13',
+  'GPT-4o-Mini',
+  'GPT-4o',
+  'GPT-4-Turbo',
+  'Gemini-1.5-Pro',
+  'Gemini-1.5-Pro-Search',
+  'Claude-3.5-Sonnet',
+  'Qwen2-72B-Chat',
+  'Llama-3-70b-Groq',
+  'Claude-3.5-Sonnet-200k',
+  'StableDiffusionXL'
+  // 'gpt-3.5-turbo-1106',
+  // 'gpt-3.5-turbo-0125',
+  // 'gpt-4',
+  // 'gpt-4-32k',
+  // 'gpt-4-1106-preview',
+  // 'gpt-4-0125-preview',
+  // 'gpt-4-turbo',
+  // 'gpt-4-turbo-2024-04-09',
+  // 'gpt-4o',
+  // 'gpt-4o-2024-05-13',
   // 'gpt-3.5-turbo-0301',
   // 'gpt-4-0314',
   // 'gpt-4-32k-0314',
 ];
 
-export const defaultModel = 'gpt-3.5-turbo';
+export const defaultModel = 'Claude-3.5-Sonnet';
 
 export const modelMaxToken: any = {
   'gpt-3.5-turbo': 4096,
@@ -142,10 +150,10 @@ export const defaultUserMaxToken = 5000;
 
 export const _defaultChatConfig: ConfigInterface = {
   model: defaultModel,
-  max_tokens: defaultUserMaxToken,
-  temperature: 0.3,
+  max_tokens: null,
+  temperature: null,
   presence_penalty: null,
-  stream: false,
+  stream: true,
   top_p: null,
   frequency_penalty: null,
 };
